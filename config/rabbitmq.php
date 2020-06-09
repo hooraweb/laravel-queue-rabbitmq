@@ -10,6 +10,7 @@ return [
     'driver' => 'rabbitmq',
     'queue' => env('RABBITMQ_QUEUE', 'default'),
     'connection' => PhpAmqpLib\Connection\AMQPLazyConnection::class,
+    'job' => \GenericJob::class,
 
     'hosts' => [
         [

@@ -84,13 +84,9 @@ class Consumer extends Worker
             function (AMQPMessage $message) use ($connection, $options, $connectionName, $queue): void {
                 $this->gotJob = true;
 
-                $job = new RabbitMQJob(
-                    $this->container,
-                    $connection,
-                    $message,
-                    $connectionName,
-                    $queue
-                );
+                $jobClass = $this->container->make('config')->get('rabbitmq.job');
+
+                $job = new $jobClass($message);
 
                 if ($this->supportsAsyncSignals()) {
                     $this->registerTimeoutHandler($job, $options);
@@ -104,7 +100,7 @@ class Consumer extends Worker
             // Before reserving any jobs, we will make sure this queue is not paused and
             // if it is we will just pause this worker for a given amount of time and
             // make sure we do not need to kill this worker process off completely.
-            if (! $this->daemonShouldRun($options, $connectionName, $queue)) {
+            if (!$this->daemonShouldRun($options, $connectionName, $queue)) {
                 $this->pauseWorker($options, $lastRestart);
                 continue;
             }
@@ -127,7 +123,7 @@ class Consumer extends Worker
             }
 
             // If no job is got off the queue, we will need to sleep the worker.
-            if (! $this->gotJob) {
+            if (!$this->gotJob) {
                 $this->sleep($options->sleep);
             }
 
@@ -150,7 +146,7 @@ class Consumer extends Worker
      */
     protected function daemonShouldRun(WorkerOptions $options, $connectionName, $queue): bool
     {
-        return ! ((($this->isDownForMaintenance)() && ! $options->force) || $this->paused);
+        return !((($this->isDownForMaintenance)() && !$options->force) || $this->paused);
     }
 
     /**
