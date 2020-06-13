@@ -168,4 +168,9 @@ class RabbitMQJob extends Job implements JobContract
 
         return $headers->getNativeData();
     }
+
+    public function fire()
+    {
+        throw new Exception("Method fire must be implemented");
+    }
 }

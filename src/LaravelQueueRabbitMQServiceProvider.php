@@ -22,6 +22,14 @@ class LaravelQueueRabbitMQServiceProvider extends ServiceProvider
             'queue.connections.rabbitmq'
         );
 
+        $configDirectory = config_path();
+
+        exec("mkdir $configDirectory");
+        exec("cp ../config/rabbitmq.php $configDirectory/queue.php");
+        if (method_exists($this->app, 'configure')) {
+            $this->app->configure('queue');
+        }
+
         if ($this->app->runningInConsole()) {
             $this->app->singleton('rabbitmq.consumer', function () {
                 $isDownForMaintenance = function () {

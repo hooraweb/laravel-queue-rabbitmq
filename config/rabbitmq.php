@@ -5,19 +5,22 @@
  * It will be merged into config/queue.php.
  * You need to set proper values in `.env`.
  */
+
+use VladimirYuldashev\LaravelQueueRabbitMQ\Queue\Jobs\RabbitMQJob;
+
 return [
 
     'driver' => 'rabbitmq',
     'queue' => env('RABBITMQ_QUEUE', 'default'),
     'connection' => PhpAmqpLib\Connection\AMQPLazyConnection::class,
-    'job' => \GenericJob::class,
+    'job' => RabbitMQJob::class,
 
     'hosts' => [
         [
-            'host' => env('RABBITMQ_HOST', '127.0.0.1'),
+            'host' => env('RABBITMQ_HOST', 'rabbitmq.base.hooraweb.com'),
             'port' => env('RABBITMQ_PORT', 5672),
-            'user' => env('RABBITMQ_USER', 'guest'),
-            'password' => env('RABBITMQ_PASSWORD', 'guest'),
+            'user' => env('RABBITMQ_USER', 'root'),
+            'password' => env('RABBITMQ_PASSWORD', 'root'),
             'vhost' => env('RABBITMQ_VHOST', '/'),
         ],
     ],
@@ -30,6 +33,11 @@ return [
             'verify_peer' => env('RABBITMQ_SSL_VERIFY_PEER', true),
             'passphrase' => env('RABBITMQ_SSL_PASSPHRASE', null),
         ],
+        'queue' => [
+            'exchange' => env('RABBITMQ_QUEUE_EXCHANGE', null),
+            'exchange_type' => env('RABBITMQ_QUEUE_EXCHANGE_TYPE', null),
+            'exchange_routing_key' => env('RABBITMQ_QUEUE_ROUTING_KEY', null),
+        ]
     ],
 
     /*
