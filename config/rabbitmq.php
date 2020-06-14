@@ -1,26 +1,21 @@
 <?php
 
-/**
- * This is an example of queue connection configuration.
- * It will be merged into config/queue.php.
- * You need to set proper values in `.env`.
- */
-
+use PhpAmqpLib\Connection\AMQPLazyConnection;
 use VladimirYuldashev\LaravelQueueRabbitMQ\Queue\Jobs\RabbitMQJob;
 
 return [
-
+    'default' => env('QUEUE_CONNECTION', 'rabbitmq'),
     'driver' => 'rabbitmq',
     'queue' => env('RABBITMQ_QUEUE', 'default'),
-    'connection' => PhpAmqpLib\Connection\AMQPLazyConnection::class,
+    'connection' => AMQPLazyConnection::class,
     'job' => RabbitMQJob::class,
 
     'hosts' => [
         [
-            'host' => env('RABBITMQ_HOST', 'rabbitmq.base.hooraweb.com'),
+            'host' => env('RABBITMQ_HOST', null),
             'port' => env('RABBITMQ_PORT', 5672),
-            'user' => env('RABBITMQ_USER', 'root'),
-            'password' => env('RABBITMQ_PASSWORD', 'root'),
+            'user' => env('RABBITMQ_USER', null),
+            'password' => env('RABBITMQ_PASSWORD', null),
             'vhost' => env('RABBITMQ_VHOST', '/'),
         ],
     ],

@@ -11,6 +11,7 @@ use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Throwable;
+use VladimirYuldashev\LaravelQueueRabbitMQ\Queue\Jobs\RabbitMQJob;
 use VladimirYuldashev\LaravelQueueRabbitMQ\Queue\RabbitMQQueue;
 
 class Consumer extends Worker
@@ -91,6 +92,10 @@ class Consumer extends Worker
                     $connectionName,
                     $queue
                 );
+
+                if ($job instanceof RabbitMQJob === false) {
+                    throw new Exception("$jobClass must be instance of ".RabbitMQJob::class);
+                }
 
                 if ($this->supportsAsyncSignals()) {
                     $this->registerTimeoutHandler($job, $options);

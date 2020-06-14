@@ -22,10 +22,16 @@ class LaravelQueueRabbitMQServiceProvider extends ServiceProvider
             'queue.connections.rabbitmq'
         );
 
-        $configDirectory = config_path();
+        $configDirectory = base_path('config');
 
-        exec("mkdir $configDirectory");
-        exec("cp ../config/rabbitmq.php $configDirectory/queue.php");
+        if (file_exists($configDirectory) === false) {
+            exec("mkdir $configDirectory");
+        }
+
+        if (file_exists($configDirectory.DIRECTORY_SEPARATOR."queue.php") === false) {
+            exec("cp ../config/rabbitmq.php $configDirectory/queue.php");
+        }
+
         if (method_exists($this->app, 'configure')) {
             $this->app->configure('queue');
         }
